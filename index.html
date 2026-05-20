@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ultra AI Spam Detector</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            padding: 30px;
+            background: #121212;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .light {
+            background: #f4f4f4;
+            color: black;
+        }
+
+        textarea {
+            width: 420px;
+            height: 100px;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 8px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #bar {
+            width: 300px;
+            height: 20px;
+            background: gray;
+            margin: 20px auto;
+            border-radius: 10px;
+        }
+
+        #fill {
+            height: 100%;
+            width: 0%;
+            background: red;
+            border-radius: 10px;
+        }
+
+        #history {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🤖 Ultra AI Spam Detector</h1>
+
+<textarea id="text" placeholder="Type or speak message..."></textarea><br>
+
+<button onclick="detect()">Check</button>
+<button onclick="startVoice()">🎤 Speak</button>
+<button onclick="toggleMode()">🌗 Mode</button>
+
+<div id="result"></div>
+
+<div id="bar"><div id="fill"></div></div>
+
+<div id="warning"></div>
+
+<br>
+<button onclick="markSpam()">Mark as Spam</button>
+<button onclick="markSafe()">Mark as Safe</button>
+
+<h3>🧾 History</h3>
+<div id="history"></div>
+
+<script>
+
+function detect() {
+    let text = document.getElementById("text").value;
+    let lower = text.toLowerCase();
+
+    let words = ["free","win","urgent","click","offer","otp","bank","prize","lottery"];
+    let score = 0;
+    let reasons = [];
+    let personality = [];
+
+    words.forEach(w=>{
+        if(lower.includes(w)){
+            score++;
+            reasons.push("Keyword: " + w);
+        }
+    });
+
+    // Link detection
+    if(lower.includes("http")){
+        score++;
+        reasons.push("Contains link");
+    }
+
+    // Fake link detection
+    let links = ["bit.ly","tinyurl",".xyz",".ru"];
+    links.forEach(l=>{
+        if(lower.includes(l)){
+            score += 2;
+            reasons.push("Suspicious link: " + l);
+        }
+    });
+
+    // Personality analysis
+    if(text === text.toUpperCase() && text.length > 5){
+        personality.push("Aggressive (ALL CAPS)");
+    }
+
+    if((text.match(/!/g) || []).length > 2){
+        personality.push("Pressure (!!)");
+    }
+
+    if(lower.includes("urgent") || lower.includes("immediately")){
+        personality.push("Urgency tactic");
+    }
+
+    let percent = Math.min(score * 15, 100);
+    let trust = 100 - percent;
+
+    document.getElementById("fill").style.width = percent + "%";
+
+    let resultText = "";
+    if(percent > 60){
+        resultText = "🚨 Spam Detected!";
+        new Audio("https://www.soundjay.com/button/beep-07.wav").play();
+    } else if(percent > 30){
+        resultText = "⚠️ Suspicious";
+    } else {
+        resultText = "✅ Safe";
+    }
+
+    // Category
+    let category = "General";
+    if(lower.includes("bank") || lower.includes("otp")) category = "Bank Scam";
+    if(lower.includes("win") || lower.includes("lottery")) category = "Lottery Scam";
+    if(lower.includes("urgent")) category = "Urgent Scam";
+
+    document.getElementById("result").innerHTML =
+        resultText +
+        "<br>📊 Spam: " + percent + "%" +
+        "<br>🔒 Trust: " + trust + "%" +
+        "<br>📂 Type: " + category;
+
+    document.getElementById("warning").innerHTML =
+        "⚠️ Reasons: " + reasons.join(", ") +
+        "<br>🧠 Style: " + personality.join(", ");
+
+    // Save history
+    let old = localStorage.getItem("history") || "";
+    localStorage.setItem("history", old + "<br>" + text + " → " + resultText);
+    document.getElementById("history").innerHTML = localStorage.getItem("history");
+}
+
+// Voice input
+function startVoice(){
+    let rec = new webkitSpeechRecognition();
+    rec.onresult = function(e){
+        document.getElementById("text").value = e.results[0][0].transcript;
+    }
+    rec.start();
+}
+
+// Dark mode
+function toggleMode(){
+    document.body.classList.toggle("light");
+}
+
+// Training mode
+function markSpam(){
+    localStorage.setItem("feedback","Spam");
+    alert("Learned as Spam!");
+}
+
+function markSafe(){
+    localStorage.setItem("feedback","Safe");
+    alert("Learned as Safe!");
+}
+
+// Load history
+document.getElementById("history").innerHTML = localStorage.getItem("history");
+
+</script>
+
+</body>
+</html>
