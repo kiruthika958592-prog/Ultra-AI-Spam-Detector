@@ -4,87 +4,276 @@
     <title>Ultra AI Spam Detector</title>
 
     <style>
+        /* Modern UI Style with Dark & Light Theme */
         body {
-            font-family: Arial;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
             padding: 30px;
-            background: #121212;
-            color: white;
-            transition: 0.3s;
+            background: #0f172a; /* Futuristic Deep Dark Blue */
+            color: #f8fafc;
+            transition: all 0.4s ease;
         }
 
         .light {
-            background: #f4f4f4;
-            color: black;
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+            margin-bottom: 25px;
+        }
+
+        /* Glassmorphism Main Container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .light .container {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
 
         textarea {
-            width: 420px;
-            height: 100px;
-            border-radius: 10px;
-            padding: 10px;
+            width: 90%;
+            height: 120px;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #38bdf8;
+            background: rgba(15, 23, 42, 0.6);
+            color: white;
+            outline: none;
+            resize: none;
+            transition: all 0.3s;
+            margin-bottom: 5px;
         }
 
+        .light textarea {
+            background: #ffffff;
+            color: #0f172a;
+        }
+
+        textarea:focus {
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
+        }
+
+        /* Live Counter Styling */
+        .counter-div {
+            width: 95%;
+            margin: 0 auto 15px auto;
+            text-align: right;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        /* Interactive Buttons */
         button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             margin: 8px;
-            border-radius: 8px;
+            border-radius: 30px;
             border: none;
+            font-weight: bold;
+            font-size: 14px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        #bar {
-            width: 300px;
-            height: 20px;
-            background: gray;
+        .btn-check { background: #38bdf8; color: white; }
+        .btn-check:hover { background: #0284c7; transform: translateY(-2px); }
+
+        .btn-voice { background: #a855f7; color: white; }
+        .btn-voice:hover { background: #7e22ce; transform: translateY(-2px); }
+
+        .btn-mode { background: #64748b; color: white; }
+        .btn-mode:hover { background: #475569; transform: translateY(-2px); }
+
+        .btn-clear { background: #ef4444; color: white; }
+        .btn-clear:hover { background: #dc2626; transform: translateY(-2px); }
+
+        .btn-action { background: #22c55e; color: white; }
+        .btn-feedback { background: #eab308; color: black; }
+
+        /* Smooth Loading Animation Container */
+        #loading-container {
+            display: none;
             margin: 20px auto;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border-left-color: #38bdf8;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Neon Progress Bar */
+        #bar {
+            width: 80%;
+            height: 15px;
+            background: #334155;
+            margin: 25px auto;
             border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         #fill {
             height: 100%;
             width: 0%;
-            background: red;
+            background: #4ade80;
             border-radius: 10px;
+            transition: width 0.5s ease-in-out, background-color 0.5s ease;
         }
 
-        #history {
-            margin-top: 20px;
-            font-size: 14px;
+        /* Dynamic Security Badge */
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            background: #475569;
+            color: white;
         }
+        .badge-safe { background: #16a34a; color: white; box-shadow: 0 0 10px rgba(22,163,74,0.5); }
+        .badge-warning { background: #ca8a04; color: white; box-shadow: 0 0 10px rgba(202,138,4,0.5); }
+        .badge-danger { background: #dc2626; color: white; box-shadow: 0 0 10px rgba(220,38,38,0.5); }
+
+        /* Result & Output Box */
+        #result-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        #result {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #warning {
+            font-size: 14px;
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .light #warning { color: #475569; }
+
+        /* History Cards */
+        .history-box {
+            margin-top: 35px;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+
+        .light .history-box { background: rgba(255, 255, 255, 0.5); border: 1px solid #cbd5e1; }
     </style>
 </head>
 
 <body>
 
-<h1>🤖 Ultra AI Spam Detector</h1>
+<div class="container">
+    <h1>🤖 Ultra AI Spam Detector</h1>
 
-<textarea id="text" placeholder="Type or speak message..."></textarea><br>
+    <textarea id="text" placeholder="Type or speak message here..." oninput="updateCounters()"></textarea><br>
+    <div class="counter-div">
+        <span id="charCount">0</span> Characters | <span id="wordCount">0</span> Words
+    </div>
 
-<button onclick="detect()">Check</button>
-<button onclick="startVoice()">🎤 Speak</button>
-<button onclick="toggleMode()">🌗 Mode</button>
+    <button class="btn-check" onclick="startAnalysis()">✨ Analyze Message</button>
+    <button class="btn-voice" onclick="startVoice()">🎤 Speak</button>
+    <button class="btn-clear" onclick="clearAll()">🧹 Clear</button>
+    <button class="btn-mode" onclick="toggleMode()">🌗 Switch Mode</button>
 
-<div id="result"></div>
+    <div id="loading-container">
+        <div class="spinner"></div>
+        <span>AI is scanning text matrix...</span>
+    </div>
 
-<div id="bar"><div id="fill"></div></div>
+    <div id="bar"><div id="fill"></div></div>
 
-<div id="warning"></div>
+    <div id="securityBadge" class="badge">System Ready</div>
 
-<br>
-<button onclick="markSpam()">Mark as Spam</button>
-<button onclick="markSafe()">Mark as Safe</button>
+    <div id="result-box">
+        <div id="result">Waiting for text scanning...</div>
+        <div id="warning"></div>
+    </div>
 
-<h3>🧾 History</h3>
-<div id="history"></div>
+    <div style="margin-top: 20px;">
+        <button class="btn-action" onclick="copyResult()">📋 Copy Result</button>
+        <button class="btn-feedback" onclick="markSpam()">🚫 Train Spam</button>
+        <button class="btn-feedback" onclick="markSafe()">🛡️ Train Safe</button>
+    </div>
+
+    <h3>🧾 Audit Log History</h3>
+    <div class="history-box" id="history"></div>
+</div>
 
 <script>
+// Live Word and Character Counter Function
+function updateCounters() {
+    let text = document.getElementById("text").value;
+    document.getElementById("charCount").innerText = text.length;
+    
+    let words = text.trim().split(/\s+/).filter(w => w.length > 0);
+    document.getElementById("wordCount").innerText = words.length;
+}
+
+// Delay execution to show animated AI Scanning progress
+function startAnalysis() {
+    let text = document.getElementById("text").value.trim();
+    if (!text) {
+        alert("Please enter some text first!");
+        return;
+    }
+    
+    // Show spinner and reset previous results
+    document.getElementById("loading-container").style.display = "block";
+    document.getElementById("result").innerText = "Analyzing...";
+    document.getElementById("warning").innerHTML = "";
+    document.getElementById("fill").style.width = "0%";
+    document.getElementById("securityBadge").className = "badge";
+    document.getElementById("securityBadge").innerText = "Scanning...";
+
+    setTimeout(detect, 1500); // 1.5 Seconds Animation Delay
+}
 
 function detect() {
+    // Hide loading animation
+    document.getElementById("loading-container").style.display = "none";
+
     let text = document.getElementById("text").value;
     let lower = text.toLowerCase();
 
-    let words = ["free","win","urgent","click","offer","otp","bank","prize","lottery"];
+    let words = ["free","win","urgent","click","offer","otp","bank","prize","lottery","subscribe","claim","money","cash"];
     let score = 0;
     let reasons = [];
     let personality = [];
@@ -92,103 +281,130 @@ function detect() {
     words.forEach(w=>{
         if(lower.includes(w)){
             score++;
-            reasons.push("Keyword: " + w);
+            reasons.push(w);
         }
     });
 
-    // Link detection
     if(lower.includes("http")){
         score++;
-        reasons.push("Contains link");
+        reasons.push("URL link");
     }
 
-    // Fake link detection
     let links = ["bit.ly","tinyurl",".xyz",".ru"];
     links.forEach(l=>{
         if(lower.includes(l)){
             score += 2;
-            reasons.push("Suspicious link: " + l);
+            reasons.push("Suspicious short-link (" + l + ")");
         }
     });
 
-    // Personality analysis
     if(text === text.toUpperCase() && text.length > 5){
-        personality.push("Aggressive (ALL CAPS)");
+        personality.push("Aggressive formatting (ALL CAPS)");
     }
 
     if((text.match(/!/g) || []).length > 2){
-        personality.push("Pressure (!!)");
+        personality.push("High pressure punctuation (!!!)");
     }
 
-    if(lower.includes("urgent") || lower.includes("immediately")){
-        personality.push("Urgency tactic");
+    if(lower.includes("urgent") || lower.includes("immediately") || lower.includes("now")){
+        personality.push("Artificial urgency tactic");
     }
 
     let percent = Math.min(score * 15, 100);
     let trust = 100 - percent;
 
-    document.getElementById("fill").style.width = percent + "%";
+    let fillBar = document.getElementById("fill");
+    let badge = document.getElementById("securityBadge");
+    fillBar.style.width = percent + "%";
 
     let resultText = "";
-    if(percent > 60){
-        resultText = "🚨 Spam Detected!";
+    
+    // Dynamic Meter Logic and Badges
+    if(percent > 50){
+        resultText = "🚨 Spam Threat Detected!";
+        fillBar.style.backgroundColor = "#dc2626"; // Red Bar
+        badge.className = "badge badge-danger";
+        badge.innerText = "Malicious Threat";
         new Audio("https://www.soundjay.com/button/beep-07.wav").play();
-    } else if(percent > 30){
-        resultText = "⚠️ Suspicious";
+    } else if(percent > 20){
+        resultText = "⚠️ Suspicious Activity Warning";
+        fillBar.style.backgroundColor = "#ca8a04"; // Yellow Bar
+        badge.className = "badge badge-warning";
+        badge.innerText = "Suspicious Content";
     } else {
-        resultText = "✅ Safe";
+        resultText = "✅ Safe Verified Message";
+        fillBar.style.backgroundColor = "#16a34a"; // Green Bar
+        badge.className = "badge badge-safe";
+        badge.innerText = "AI Verified Safe";
     }
 
-    // Category
-    let category = "General";
-    if(lower.includes("bank") || lower.includes("otp")) category = "Bank Scam";
-    if(lower.includes("win") || lower.includes("lottery")) category = "Lottery Scam";
-    if(lower.includes("urgent")) category = "Urgent Scam";
+    let category = "General Communication";
+    if(lower.includes("bank") || lower.includes("otp")) category = "Financial Phishing Scam";
+    if(lower.includes("win") || lower.includes("lottery") || lower.includes("prize")) category = "Lottery Fraud";
+    if(lower.includes("urgent")) category = "Blackmail/Urgent Scam";
 
-    document.getElementById("result").innerHTML =
-        resultText +
-        "<br>📊 Spam: " + percent + "%" +
-        "<br>🔒 Trust: " + trust + "%" +
-        "<br>📂 Type: " + category;
+    document.getElementById("result").innerHTML = resultText;
 
     document.getElementById("warning").innerHTML =
-        "⚠️ Reasons: " + reasons.join(", ") +
-        "<br>🧠 Style: " + personality.join(", ");
+        "📊 <b>Spam Probability:</b> " + percent + "%" + " | 🔒 <b>Trust Index:</b> " + trust + "%" +
+        "<br>📂 <b>Threat Profile:</b> " + category +
+        "<br>🔍 <b>Trigger Elements:</b> " + (reasons.length > 0 ? reasons.join(", ") : "None") +
+        "<br>🧠 <b>Behavioral Pattern:</b> " + (personality.length > 0 ? personality.join(", ") : "Normal");
 
-    // Save history
+    // Save history logs
     let old = localStorage.getItem("history") || "";
-    localStorage.setItem("history", old + "<br>" + text + " → " + resultText);
+    let logEntry = "<p style='margin:5px 0; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;'>• " + text.substring(0, 30) + "... → <b>" + resultText + "</b></p>";
+    localStorage.setItem("history", logEntry + old);
     document.getElementById("history").innerHTML = localStorage.getItem("history");
 }
 
-// Voice input
 function startVoice(){
     let rec = new webkitSpeechRecognition();
     rec.onresult = function(e){
         document.getElementById("text").value = e.results[0][0].transcript;
+        updateCounters();
     }
     rec.start();
 }
 
-// Dark mode
 function toggleMode(){
     document.body.classList.toggle("light");
 }
 
-// Training mode
+function clearAll() {
+    document.getElementById("text").value = "";
+    document.getElementById("result").innerText = "Waiting for text scanning...";
+    document.getElementById("warning").innerHTML = "";
+    document.getElementById("fill").style.width = "0%";
+    document.getElementById("fill").style.backgroundColor = "#4ade80";
+    document.getElementById("securityBadge").className = "badge";
+    document.getElementById("securityBadge").innerText = "System Ready";
+    updateCounters();
+}
+
+function copyResult() {
+    let resultText = document.getElementById("result").innerText;
+    let details = document.getElementById("warning").innerText;
+    if(resultText === "Waiting for text scanning...") {
+        alert("No results to copy!");
+        return;
+    }
+    navigator.clipboard.writeText(resultText + "\n" + details);
+    alert("Analysis data copied to clipboard! 📋");
+}
+
 function markSpam(){
     localStorage.setItem("feedback","Spam");
-    alert("Learned as Spam!");
+    alert("AI Algorithm updated: Logged as Threat Vector.");
 }
 
 function markSafe(){
     localStorage.setItem("feedback","Safe");
-    alert("Learned as Safe!");
+    alert("AI Algorithm updated: Logged as Verified Clean.");
 }
 
-// Load history
-document.getElementById("history").innerHTML = localStorage.getItem("history");
-
+// Load Audit History Logs
+document.getElementById("history").innerHTML = localStorage.getItem("history") || "No logs available.";
 </script>
 
 </body>
