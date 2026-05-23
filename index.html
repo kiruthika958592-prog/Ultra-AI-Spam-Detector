@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultra AI Spam Detector</title>
+    <title>Ultra Spam Detector Portal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Courier New', Courier, monospace;
+            scroll-behavior: smooth;
         }
 
         body {
@@ -19,14 +20,13 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
             align-items: center;
-            padding: 20px;
+            padding-bottom: 110px; /* Extra space so content never hides behind the footer bar */
             overflow-x: hidden;
             position: relative;
         }
 
-        /* Matrix Background Canvas */
+        /* Matrix Background Canvas Layer */
         #matrixBg {
             position: fixed;
             top: 0;
@@ -34,11 +34,11 @@
             width: 100%;
             height: 100%;
             z-index: 1;
-            opacity: 0.15;
+            opacity: 0.12;
             pointer-events: none;
         }
 
-        /* Particle Trail Canvas */
+        /* Particle Trail Canvas Layer */
         #particleCanvas {
             position: fixed;
             top: 0;
@@ -49,62 +49,89 @@
             pointer-events: none;
         }
 
-        /* TV-STYLE SCROLLING METADATA TICKER BOX */
+        /* 🏢 1. STANDARD TOP WEBSITE HEADER / NAVIGATION */
+        .web-header {
+            width: 100%;
+            background: rgba(9, 13, 22, 0.9);
+            border-bottom: 2px solid #0ea5e9;
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.2);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .web-logo {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #00f0ff;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .web-nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .web-nav-links a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 10pt;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .web-nav-links a:hover, .web-nav-links a.active {
+            color: #ff007f;
+            text-shadow: 0 0 8px rgba(255, 0, 127, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .web-nav-links { display: none; } 
+        }
+
+        /* MAIN CONTENT WRAPPER */
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 20px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* 📺 TV-STYLE SCROLLING METADATA TICKER BOX */
         .tv-ticker-box {
             background: rgba(15, 23, 42, 0.95);
             border: 2px solid #ff007f;
             border-radius: 8px;
-            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
-            width: 100%;
-            max-width: 950px;
-            padding: 15px 18px;
-            z-index: 10;
-            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+            padding: 12px 18px;
             position: relative;
-            overflow: hidden; /* Excess text is hidden to create the frame */
+            overflow: hidden;
             display: flex;
             align-items: center;
         }
 
-        .tv-ticker-box::before {
-            content: "📡 LIVE BROADCAST";
-            position: absolute;
-            top: 0;
-            right: 15px;
-            background: #ff007f;
-            color: #020617;
-            font-size: 7.5pt;
-            font-weight: bold;
-            padding: 2px 8px;
-            border-bottom-left-radius: 4px;
-            z-index: 12;
-            animation: blinkMode 1s infinite alternate;
-        }
-
-        @keyframes blinkMode {
-            0% { opacity: 0.4; }
-            100% { opacity: 1; }
-        }
-
-        /* The Scrolling Container */
         .ticker-wrap {
             width: 100%;
             overflow: hidden;
             display: flex;
         }
 
-        /* Animated Text Strip */
         .ticker-move {
             display: inline-block;
             white-space: nowrap;
-            padding-right: 100%; /* Starting offset gap */
+            padding-right: 100%;
             animation: marqueeStream 25s linear infinite;
-            font-size: 10.5pt;
-        }
-
-        /* Pause text when human hovers mouse */
-        .tv-ticker-box:hover .ticker-move {
-            animation-play-state: paused;
+            font-size: 10pt;
         }
 
         @keyframes marqueeStream {
@@ -112,50 +139,84 @@
             100% { transform: translate3d(-100%, 0, 0); }
         }
 
-        .ticker-label {
-            color: #ff007f;
-            font-weight: bold;
-            margin-right: 5px;
+        .ticker-label { color: #ff007f; font-weight: bold; margin-right: 5px; }
+        .ticker-value { color: #00f0ff; margin-right: 40px; }
+
+        /* 🚀 2. WEBSITE HERO INTRO SECTION (BOX RESTORED!) */
+        .hero-section {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px dashed rgba(14, 165, 233, 0.4);
+            border-radius: 12px;
+            padding: 35px;
+            text-align: center;
+            box-shadow: inset 0 0 20px rgba(14, 165, 233, 0.1);
+        }
+
+        .hero-section h2 {
+            font-size: 22pt;
+            color: #0ea5e9;
             text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
         }
 
-        .ticker-value {
+        .hero-section p {
+            font-size: 10pt;
+            color: #64748b;
+            max-width: 700px;
+            margin: 0 auto 20px auto;
+            line-height: 1.5;
+        }
+
+        /* 📊 3. CORE SERVICE CARD GRID LAYOUT (CLICKABLE ACTIONS) */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: rgba(9, 13, 22, 0.85);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: #ff007f;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .feature-card h3 {
+            font-size: 12pt;
             color: #00f0ff;
-            text-shadow: 0 0 5px rgba(0, 240, 255, 0.5);
-            margin-right: 40px; /* Gap between different data segments */
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* MAIN DASHBOARD */
+        .feature-card p {
+            font-size: 9pt;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        /* 🛠️ 4. MAIN INTERACTIVE DASHBOARD SYSTEM */
         .dashboard {
             background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             border: 2px solid #0ea5e9;
-            box-shadow: 0 0 30px rgba(14, 165, 233, 0.3);
+            box-shadow: 0 0 35px rgba(14, 165, 233, 0.25);
             border-radius: 16px;
-            width: 100%;
-            max-width: 950px;
-            z-index: 10;
             padding: 25px;
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.5s ease;
-        }
-
-        /* Hover Multicolor Neon Glow Effect */
-        .dashboard:hover, .dashboard:active {
-            transform: scale(1.01);
-            border-image: linear-gradient(45deg, #ff007f, #7f00ff, #00f0ff, #00ff7f, #ff007f) 1;
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.4), 0 0 20px rgba(127, 0, 255, 0.3);
-            animation: gradientBorder 4s linear infinite;
-        }
-
-        @keyframes gradientBorder {
-            0% { border-image-source: linear-gradient(45deg, #ff007f, #7f00ff, #00f0ff, #00ff7f, #ff007f); }
-            50% { border-image-source: linear-gradient(225deg, #ff007f, #00ff7f, #00f0ff, #7f00ff, #ff007f); }
-            100% { border-image-source: linear-gradient(45deg, #ff007f, #7f00ff, #00f0ff, #00ff7f, #ff007f); }
         }
 
         @media (min-width: 768px) {
@@ -163,35 +224,12 @@
             .full-width { grid-column: span 2; }
         }
 
-        h1 {
-            text-align: center;
-            font-size: 24pt;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #0ea5e9;
-            text-shadow: 0 0 10px rgba(14, 165, 233, 0.7);
-            margin-bottom: 5px;
-        }
-
-        .dashboard:hover h1 {
-            background: linear-gradient(90deg, #00f0ff, #ff007f, #7f00ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: none;
-        }
-
-        .terminal-header {
-            border-bottom: 1px dashed rgba(14, 165, 233, 0.4);
-            padding-bottom: 15px;
-            text-align: center;
-        }
-
-        /* Cyber Threat Map Grid */
+        /* Threat Map Window */
         .map-container {
             background: #090d16;
             border: 1px solid rgba(14, 165, 233, 0.3);
             border-radius: 8px;
-            height: 120px;
+            height: 110px;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -216,19 +254,13 @@
         }
 
         @keyframes attack {
-            0% { left: -50%; top: 30%; }
-            100% { left: 100%; top: 70%; }
+            0% { left: -50%; top: 40%; }
+            100% { left: 100%; top: 60%; }
         }
 
-        .log-feed {
-            position: absolute;
-            bottom: 5px;
-            left: 10px;
-            font-size: 8pt;
-            color: #ff007f;
-        }
+        .log-feed { position: absolute; bottom: 5px; left: 10px; font-size: 8pt; color: #ff007f; }
 
-        /* Workspace Panels */
+        /* Workplace Panels */
         .panel {
             background: rgba(9, 13, 22, 0.7);
             border: 1px solid rgba(14, 165, 233, 0.2);
@@ -242,14 +274,13 @@
             border: 1px solid #0ea5e9;
             padding: 12px;
             color: #38bdf8;
-            font-family: monospace;
             font-size: 10pt;
             outline: none;
             margin-bottom: 5px;
             border-radius: 4px;
         }
 
-        textarea { height: 100px; resize: none; }
+        textarea { height: 95px; resize: none; }
 
         .counter-container {
             display: flex;
@@ -257,9 +288,7 @@
             font-size: 9pt;
             color: #64748b;
             margin-bottom: 12px;
-            padding: 0 2px;
         }
-        .counter-container span b { color: #38bdf8; }
 
         .btn-group {
             display: grid;
@@ -273,12 +302,11 @@
             border: 1px solid #0ea5e9;
             color: #0ea5e9;
             padding: 10px 15px;
-            font-family: monospace;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
-            width: 100%;
             text-transform: uppercase;
+            width: 100%;
         }
 
         .btn:hover {
@@ -287,21 +315,14 @@
             box-shadow: 0 0 15px rgba(14, 165, 233, 0.6);
         }
 
-        .btn.clear-btn {
-            border-color: #64748b;
-            color: #64748b;
-        }
-        .btn.clear-btn:hover {
-            background: #64748b;
-            color: #020617;
-            box-shadow: 0 0 15px rgba(100, 116, 139, 0.6);
-        }
+        .btn.clear-btn { border-color: #64748b; color: #64748b; }
+        .btn.clear-btn:hover { background: #64748b; color: #020617; }
 
-        /* Logs Output Containers */
+        /* Output Logs Fields */
         .history-box, .chat-box, .phone-box {
             background: #040812;
             border: 1px solid rgba(14, 165, 233, 0.3);
-            height: 150px;
+            height: 130px;
             overflow-y: auto;
             padding: 10px;
             font-size: 9pt;
@@ -309,65 +330,67 @@
             margin-top: 5px;
         }
 
-        .phone-box {
-            height: 95px;
-            font-size: 8.5pt;
-            color: #64748b;
-            line-height: 1.4;
-        }
+        .phone-box { height: 90px; color: #64748b; }
 
-        .history-item {
-            padding: 6px 0;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
-            line-height: 1.3;
-        }
+        .history-item { padding: 5px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.05); }
         .history-item.danger { color: #ef4444; }
         .history-item.safe { color: #10b981; }
 
-        .bot-panel {
+        .status-bar { display: flex; justify-content: space-between; font-size: 9pt; margin: 5px 0; }
+
+        .meter { height: 8px; background: #090d16; border: 1px solid rgba(14, 165, 233, 0.3); border-radius: 4px; overflow: hidden; margin-bottom: 15px; }
+        .meter-fill { height: 100%; width: 0%; transition: all 0.5s ease; background: #34d399; }
+
+        #output { font-size: 9.5pt; padding: 12px; background: rgba(14, 165, 233, 0.05); border-left: 3px solid #0ea5e9; min-height: 45px; margin-bottom: 10px; }
+
+        /* 📱 5. FIXED STICKY CYBER FOOTER NAVIGATION BAR */
+        .cyber-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 2px solid #0ea5e9;
+            box-shadow: 0 -5px 25px rgba(14, 165, 233, 0.3);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px 0;
+            z-index: 2000; /* Super high index to stay always on top */
+        }
+
+        .nav-item {
+            color: #64748b;
+            font-size: 9.5pt;
+            font-weight: bold;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: none;
+            border: none;
+            outline: none;
         }
 
-        .chat-box { height: 140px; }
-        .msg { margin-bottom: 8px; line-height: 1.3; }
-        .msg.bot { color: #34d399; }
-        .msg.user { color: #38bdf8; text-align: right; }
-
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            font-size: 9pt;
-            margin-bottom: 5px;
-            margin-top: 5px;
+        .nav-item span.icon {
+            font-size: 14pt;
         }
 
-        .meter {
-            height: 8px;
-            background: #090d16;
-            border: 1px solid rgba(14, 165, 233, 0.3);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 15px;
+        .nav-item.active { 
+            color: #00f0ff; 
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.6); 
+        }
+        
+        .nav-item.active span.icon {
+            transform: scale(1.1);
+            text-shadow: 0 0 10px #00f0ff;
         }
 
-        .meter-fill {
-            height: 100%;
-            width: 0%;
-            transition: all 0.5s ease;
-            background: #34d399;
-        }
-
-        #output {
-            font-size: 9.5pt;
-            padding: 12px;
-            background: rgba(14, 165, 233, 0.05);
-            border-left: 3px solid #0ea5e9;
-            min-height: 45px;
-            line-height: 1.4;
-            margin-bottom: 10px;
-        }
+        .nav-item:hover { color: #ff007f; }
     </style>
 </head>
 <body onclick="playWelcomeGreeting()">
@@ -375,363 +398,237 @@
     <canvas id="matrixBg"></canvas>
     <canvas id="particleCanvas"></canvas>
 
-    <div class="tv-ticker-box">
-        <div class="ticker-wrap">
-            <div class="ticker-move">
-                <span class="ticker-label">👤 DEVELOPER NAME:</span>
-                <span class="ticker-value">A. KEERTHIKA // SECOND YEAR B.Sc. COMPUTER SCIENCE</span>
-                
-                <span class="ticker-label">🔗 SECURE LINK NAME:</span>
-                <span class="ticker-value">ULTRA-SPAM-TRACER-NODE-GRID</span>
-                
-                <span class="ticker-label">🎯 GRID PURPOSE:</span>
-                <span class="ticker-value">REAL-TIME AI PACKET INSPECTION & TELECOM SPAM BLOCKING PROTOCOL</span>
-            </div>
-        </div>
-    </div>
+    <header class="web-header">
+        <a href="#" class="web-logo">🤖 ULTRA SPAM DETECTOR</a>
+        <nav class="web-nav-links">
+            <a href="#" class="active">Home</a>
+            <a href="#dashboardSection">Vulnerability Scanner</a>
+            <a href="#" onclick="alert('Database Syncing Mode Active!')">Node Records</a>
+        </nav>
+    </header>
 
-    <div class="dashboard" id="mainDashboard">
-        <div class="terminal-header full-width">
-            <h1>🤖 Ultra AI Spam Detector</h1>
-            <p style="font-size: 9pt; color: #64748b;">Multi-Agent Network Grid // Particle Matrix v5</p>
-        </div>
+    <div class="container">
 
-        <div class="map-container full-width">
-            <div class="map-grid"></div>
-            <div class="threat-line"></div>
-            <div class="log-feed" id="liveLog">📡 SYSTEM LOG: Listening to safe packet streams...</div>
-        </div>
-
-        <div class="panel">
-            <div class="status-bar">
-                <span>[AGENT: SCANNER]</span>
-                <span id="scanMode">READY</span>
-            </div>
-            
-            <textarea id="mainInput" placeholder="Input payload stream data to analyze for network vulnerabilities..." oninput="updateCounters()"></textarea>
-            
-            <div class="counter-container">
-                <span>Words: <b id="wordCount">0</b></span>
-                <span>Characters: <b id="charCount">0</b></span>
-            </div>
-            
-            <div class="btn-group">
-                <button class="btn" onclick="runAnalysis(event)">⚡ Run Cyber Scan</button>
-                <button class="btn clear-btn" onclick="clearInput(event)">🧹 Clear</button>
-            </div>
-
-            <div class="status-bar"><span>THREAT VECTOR ASSESSMENT</span><span id="riskPercent">0%</span></div>
-            <div class="meter"><div id="riskMeter" class="meter-fill"></div></div>
-
-            <div id="output">Waiting for text scanning...</div>
-            
-            <button class="btn" id="pdfBtn" style="display:none; margin-bottom: 15px;" onclick="generatePDFReport(event)">📥 Download Security Brief</button>
-
-            <div class="status-bar" style="margin-top: 15px;"><span>📜 LONG SCAN HISTORY</span><span>LOGGED</span></div>
-            <div class="history-box" id="historyBox">
-                <div class="history-item" style="color: #64748b;">> No previous logs found. System memory ready.</div>
-            </div>
-        </div>
-
-        <div class="panel bot-panel">
-            <div>
-                <div class="status-bar"><span>[AGENT: CYBER-BOT]</span><span>ONLINE</span></div>
-                <div class="chat-box" id="chatBox">
-                    <div class="msg bot">🤖 [AI]: Commander, the mainframe is safe. Drop queries anytime.</div>
+        <div class="tv-ticker-box">
+            <div class="ticker-wrap">
+                <div class="ticker-move">
+                    <span class="ticker-label">👤 DEVELOPER:</span>
+                    <span class="ticker-value">A. KEERTHIKA // SECOND YEAR B.Sc. COMPUTER SCIENCE</span>
+                    <span class="ticker-label">🔗 PROTOCOL LINK:</span>
+                    <span class="ticker-value">ULTRA-SPAM-TRACER-NODE-GRID</span>
+                    <span class="ticker-label">🎯 GRID PURPOSE:</span>
+                    <span class="ticker-value">REAL-TIME AI PACKET INSPECTION & TELECOM SPAM BLOCKING PROTOCOL</span>
                 </div>
-                <input type="text" id="botInput" style="margin-top:5px;" placeholder="Ask Core Bot..." onkeypress="if(event.key === 'Enter') askBot()">
-                <button class="btn" style="font-size: 8.5pt; padding: 6px;" onclick="askBot()">Query</button>
-            </div>
-
-            <div style="border-top: 1px dashed rgba(14, 165, 233, 0.4); padding-top: 10px; margin-top: 5px;">
-                <div class="status-bar"><span>📞 [NODE: PHONE VERIFIER]</span><span style="color:#eab308;">STANDBY</span></div>
-                <input type="text" id="phoneInput" maxlength="10" placeholder="Enter 10-digit number..." oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                <button class="btn" style="font-size: 8.5pt; padding: 6px; background: rgba(14, 165, 233, 0.1);" onclick="checkPhoneNumber(event)">🔍 Check Number</button>
-                <div class="phone-box" id="phoneOutput">> Awaiting phone network node stream...</div>
             </div>
         </div>
+
+        <section class="hero-section">
+            <h2>Ultra Spam Detector</h2>
+            <p>Deploying automated behavioral text matrices and real-time telecom string vector audits. Secure your network parameters against high-frequency phish codes automatically.</p>
+            <button class="btn" style="max-width: 200px; margin: 0 auto; font-size: 9pt;" onclick="document.getElementById('dashboardSection').scrollIntoView();">Initialize Scanner ↓</button>
+        </section>
+
+        <section class="features-grid">
+            <div class="feature-card" onclick="scrollToEngine('[AGENT: URL SCANNER ACTIVE]')">
+                <h3>🔍 Phish URL Tracking</h3>
+                <p>Scans multi-tier network addresses for untrusted security links, domain flags, and hidden redirection scripts instantly.</p>
+            </div>
+            <div class="feature-card" onclick="scrollToEngine('[AGENT: TELECOM INSPECTOR ACTIVE]')">
+                <h3>📞 Core Node Inspector</h3>
+                <p>Verifies commercial 10-digit incoming telecom logs directly against regional carrier blacklist databases.</p>
+            </div>
+            <div class="feature-card" onclick="scrollToEngine('[AGENT: REPORT ENGINE ACTIVE]')">
+                <h3>📜 Audit Engine Logs</h3>
+                <p>Generates encrypted data packet threat history and compile full portable network security parameters into PDF briefs.</p>
+            </div>
+        </section>
+
+        <section class="dashboard" id="dashboardSection">
+            <div class="terminal-header full-width" style="border-bottom: 1px dashed rgba(14, 165, 233, 0.3); padding-bottom: 10px;">
+                <h2 style="font-size: 14pt; color: #0ea5e9;">🛰️ NETWORK OPERATION PROTOCOL ENGINE</h2>
+            </div>
+
+            <div class="map-container full-width">
+                <div class="map-grid"></div>
+                <div class="threat-line"></div>
+                <div class="log-feed" id="liveLog">📡 SYSTEM LOG: Listening to safe packet streams...</div>
+            </div>
+
+            <div class="panel">
+                <div class="status-bar"><span>[AGENT: TEXT SCANNER]</span><span id="scanMode" style="color:#10b981;">READY</span></div>
+                <textarea id="mainInput" placeholder="Input payload stream data to analyze for network vulnerabilities..." oninput="updateCounters()"></textarea>
+                <div class="counter-container">
+                    <span>Words: <b id="wordCount" style="color:#0ea5e9;">0</b></span>
+                    <span>Characters: <b id="charCount" style="color:#0ea5e9;">0</b></span>
+                </div>
+                <div class="btn-group">
+                    <button class="btn" onclick="runAnalysis(event)">⚡ Run Cyber Scan</button>
+                    <button class="btn clear-btn" onclick="clearInput(event)">🧹 Clear</button>
+                </div>
+                <div class="status-bar"><span>THREAT VECTOR ASSESSMENT</span><span id="riskPercent">0%</span></div>
+                <div class="meter"><div id="riskMeter" class="meter-fill"></div></div>
+                <div id="output">Waiting for text scanning...</div>
+                <button class="btn" id="pdfBtn" style="display:none; margin-bottom: 15px; font-size: 8.5pt; padding: 6px;" onclick="generatePDFReport(event)">📥 Download Security Brief</button>
+                <div class="status-bar" style="margin-top: 15px;"><span>📜 ENGINE RUN LOGS</span></div>
+                <div class="history-box" id="historyBox"><div class="history-item" style="color: #64748b;">> Ready. Memory unit cleared.</div></div>
+            </div>
+
+            <div class="panel" style="display:flex; flex-direction:column; gap:15px;">
+                <div>
+                    <div class="status-bar"><span>[AGENT: CYBER-BOT]</span><span>ONLINE</span></div>
+                    <div class="chat-box" id="chatBox"><div class="msg bot" style="color:#34d399;">🤖 [AI]: Core agent online. Input your network inquiries.</div></div>
+                    <input type="text" id="botInput" style="margin-top:5px; padding: 8px;" placeholder="Ask Bot..." onkeypress="if(event.key === 'Enter') askBot()">
+                    <button class="btn" style="font-size: 8pt; padding: 5px;" onclick="askBot()">Query</button>
+                </div>
+                <div style="border-top: 1px dashed rgba(14, 165, 233, 0.4); padding-top: 10px;">
+                    <div class="status-bar"><span>📞 [NODE: VERIFIER]</span><span style="color:#eab308;">STANDBY</span></div>
+                    <input type="text" id="phoneInput" maxlength="10" style="padding: 8px;" placeholder="Enter 10-digit number..." oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <button class="btn" style="font-size: 8pt; padding: 5px; background: rgba(14, 165, 233, 0.05);" onclick="checkPhoneNumber(event)">🔍 Check Number</button>
+                    <div class="phone-box" id="phoneOutput">> Awaiting phone network packet stream...</div>
+                </div>
+            </div>
+        </section>
     </div>
+
+    <footer class="cyber-footer">
+        <button class="nav-item active" onclick="changeTab('home')">
+            <span class="icon">🏠</span>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" onclick="changeTab('url')">
+            <span class="icon">🔍</span>
+            <span>URL Check</span>
+        </button>
+        <button class="nav-item" onclick="changeTab('ats')">
+            <span class="icon">📊</span>
+            <span>ATS Rank</span>
+        </button>
+        <button class="nav-item" onclick="changeTab('crypt')">
+            <span class="icon">🔐</span>
+            <span>Crypt</span>
+        </button>
+    </footer>
 
     <script>
-        // --- TEXT TO SPEECH INITIAL ENGINE ---
         let hasWelcomed = false;
-
-        function speakSweetText(textToSay) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); 
-                
-                let utterance = new SpeechSynthesisUtterance(textToSay);
-                let voices = window.speechSynthesis.getVoices();
-                
-                let femaleVoice = null;
-                const femaleKeywords = ['zira', 'female', 'girl', 'hazel', 'susan', 'heera', 'google us english', 'google uk english female'];
-                
-                for (let keyword of femaleKeywords) {
-                    femaleVoice = voices.find(v => v.name.toLowerCase().includes(keyword));
-                    if (femaleVoice) break;
-                }
-                
-                if (!femaleVoice && voices.length > 0) {
-                    femaleVoice = voices.find(v => !v.name.toLowerCase().includes('male') && !v.name.toLowerCase().includes('david'));
-                }
-                
-                if (femaleVoice) utterance.voice = femaleVoice;
-                utterance.pitch = 1.45; 
-                utterance.rate = 0.92;  
-                
-                window.speechSynthesis.speak(utterance);
-            }
-        }
-
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.getVoices();
-            if (window.speechSynthesis.onvoiceschanged !== undefined) {
-                window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-            }
-        }
-
         function playWelcomeGreeting() {
             if (!hasWelcomed) {
-                speakSweetText("Welcome to Ultra AI Spam Detector");
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    let utterance = new SpeechSynthesisUtterance("Welcome to Ultra Spam Detector");
+                    utterance.pitch = 1.45; utterance.rate = 0.92;
+                    window.speechSynthesis.speak(utterance);
+                }
                 hasWelcomed = true;
             }
         }
 
-        // --- Phone Number Detector ---
-        function checkPhoneNumber(e) {
-            e.stopPropagation();
-            let num = document.getElementById("phoneInput").value.trim();
-            let pOut = document.getElementById("phoneOutput");
-            
-            if(num.length < 10) {
-                playBeep(300, 'sine', 0.15);
-                alert("Please enter a valid 10-digit mobile number!");
-                return;
-            }
-            
-            playBeep(550, 'sine', 0.1);
-            pOut.innerHTML = "<span style='color: #64748b;'>📡 Connecting to Telecom Node Gateway...</span>";
-            
-            setTimeout(() => {
-                const carriers = ['Reliance Jio Infocomm', 'Bharti Airtel', 'Vodafone Idea', 'BSNL Network'];
-                const locations = ['Tamil Nadu Circle', 'Mumbai Metro', 'Delhi NCR', 'Karnataka Region', 'Kerala Circle'];
-                
-                let randomCarrier = carriers[Math.floor(Math.random() * carriers.length)];
-                let randomLocation = locations[Math.floor(Math.random() * locations.length)];
-                
-                if(num.startsWith("140") || num.startsWith("180") || num.startsWith("120") || num.endsWith("777") || num.endsWith("000")) {
-                    startSirenAlarm();
-                    pOut.innerHTML = `
-                        <span style='color: #ef4444; font-weight: bold;'>🚨 THREAT VERDICT: SPAM NODE</span><br>
-                        <span style='color: #38bdf8;'>Carrier:</span> ${randomCarrier}<br>
-                        <span style='color: #38bdf8;'>Region:</span> ${randomLocation}<br>
-                        <span style='color: #ef4444;'>Flags:</span> Telemarketing / Fraud Suspect
-                    `;
-                } else {
-                    playBeep(850, 'sine', 0.2);
-                    pOut.innerHTML = `
-                        <span style='color: #10b981; font-weight: bold;'>✅ THREAT VERDICT: SAFE / VERIFIED</span><br>
-                        <span style='color: #38bdf8;'>Carrier:</span> ${randomCarrier}<br>
-                        <span style='color: #38bdf8;'>Region:</span> ${randomLocation}<br>
-                        <span style='color: #10b981;'>Status:</span> Private Citizen Node
-                    `;
-                }
-            }, 1200);
+        // Click on Cards to Scroll Down dynamically
+        function scrollToEngine(statusMessage) {
+            playBeep(750, 'sine', 0.1);
+            document.getElementById('dashboardSection').scrollIntoView();
+            let liveLog = document.getElementById('liveLog');
+            liveLog.innerText = `📡 SYSTEM LOG: ${statusMessage}`;
+            setTimeout(() => { liveLog.innerText = "📡 SYSTEM LOG: Listening to safe packet streams..."; }, 3000);
         }
 
-        // --- Matrix Backdrop Generation ---
-        const mCanvas = document.getElementById('matrixBg');
-        const mCtx = mCanvas.getContext('2d');
-        mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
-        const alphabet = "010101ABCDEFGHIJKLMNOPQRSTUVWXYZ🧬🔐🛡️🚨";
-        const fontSize = 14;
-        const columns = mCanvas.width / fontSize;
-        const rainDrops = Array(Math.floor(columns)).fill(1);
+        function changeTab(tabName) {
+            playBeep(700, 'sine', 0.05);
+            let navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            if(tabName !== 'home') alert(`Innovative Route Activated: Loading ${tabName.toUpperCase()} Module inside Professional Layout Frame!`);
+        }
 
-        function drawMatrix() {
-            mCtx.fillStyle = 'rgba(2, 6, 23, 0.05)';
-            mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
-            mCtx.fillStyle = '#0f766e'; 
-            mCtx.font = fontSize + 'px monospace';
-            for (let i = 0; i < rainDrops.length; i++) {
-                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                mCtx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-                if (rainDrops[i] * fontSize > mCanvas.height && Math.random() > 0.975) {
-                    rainDrops[i] = 0;
+        function checkPhoneNumber(e) {
+            e.stopPropagation(); let num = document.getElementById("phoneInput").value.trim();
+            let pOut = document.getElementById("phoneOutput"); if(num.length < 10) return alert("Enter 10 digit number!");
+            playBeep(550, 'sine', 0.1); pOut.innerHTML = "📡 Querying registry infrastructure...";
+            setTimeout(() => {
+                if(num.startsWith("140") || num.startsWith("180") || num.endsWith("000")) {
+                    startSirenAlarm(); pOut.innerHTML = `<span style='color: #ef4444; font-weight: bold;'>🚨 FLAG VERDICT: SPAM</span><br>Carrier: Commercial Loop<br>Status: Blacklisted Node`;
+                } else {
+                    playBeep(850, 'sine', 0.2); pOut.innerHTML = `<span style='color: #10b981; font-weight: bold;'>✅ FLAG VERDICT: SAFE</span><br>Carrier: Private Citizen Network<br>Status: Secure Stream`;
                 }
+            }, 1000);
+        }
+
+        // --- MATRIX LOGIC BACKDROP ---
+        const mCanvas = document.getElementById('matrixBg'); const mCtx = mCanvas.getContext('2d');
+        mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
+        const alphabet = "010101ABCDEFGHIJKLMNOPQRSTUVWXYZ🧬🛡️🚨"; const fontSize = 14;
+        const columns = mCanvas.width / fontSize; const rainDrops = Array(Math.floor(columns)).fill(1);
+        function drawMatrix() {
+            mCtx.fillStyle = 'rgba(2, 6, 23, 0.05)'; mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
+            mCtx.fillStyle = '#0f766e'; mCtx.font = fontSize + 'px monospace';
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length)); mCtx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                if (rainDrops[i] * fontSize > mCanvas.height && Math.random() > 0.975) rainDrops[i] = 0;
                 rainDrops[i]++;
             }
         }
         setInterval(drawMatrix, 30);
 
-        // --- Cyber Audio Elements ---
-        let audioCtx; let alarmInterval;
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-
-        function playBeep(freq, type, duration) {
-            initAudio();
-            try {
-                let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
-                osc.type = type; osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(); osc.stop(audioCtx.currentTime + duration);
-            } catch(e) {}
-        }
-
-        function startSirenAlarm() {
-            initAudio(); stopSirenAlarm(); 
-            let count = 0;
-            alarmInterval = setInterval(() => {
-                if (count >= 6) { clearInterval(alarmInterval); return; }
-                try {
-                    let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
-                    osc.type = "sawtooth";
-                    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-                    osc.frequency.linearRampToValueAtTime(700, audioCtx.currentTime + 0.25);
-                    osc.frequency.linearRampToValueAtTime(300, audioCtx.currentTime + 0.5);
-                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                    gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                    osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.5);
-                } catch(e) {}
-                count++;
-            }, 500);
-        }
-        function stopSirenAlarm() { if (alarmInterval) clearInterval(alarmInterval); }
-
-        // --- Trail Vectors ---
-        const pCanvas = document.getElementById('particleCanvas');
-        const pCtx = pCanvas.getContext('2d');
-        pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight;
-        let particles = [];
-
-        window.addEventListener('resize', () => {
-            mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
-            pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight;
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            for(let i=0; i<2; i++) {
-                particles.push({
-                    x: e.clientX, y: e.clientY, size: Math.random() * 3 + 1,
-                    speedX: (Math.random() - 0.5) * 2, speedY: (Math.random() - 0.5) * 2,
-                    color: `hsl(${Math.random() * 360}, 100%, 50%)`, alpha: 1
-                });
-            }
-        });
-
-        function animateParticles() {
-            pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
-            for(let i = 0; i < particles.length; i++) {
-                let p = particles[i]; pCtx.fillStyle = p.color; pCtx.globalAlpha = p.alpha;
-                pCtx.beginPath(); pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2); pCtx.fill();
-                p.x += p.speedX; p.y += p.speedY; p.alpha -= 0.02;
-                if(p.alpha <= 0) { particles.splice(i, 1); i--; }
-            }
-            pCtx.globalAlpha = 1; requestAnimationFrame(animateParticles);
-        }
-        animateParticles();
-
+        // --- CORE ALGORITHMIC SCANNERS ---
+        let lastText = ""; let lastVerdict = ""; let historyStarted = false;
         function updateCounters() {
-            let text = document.getElementById("mainInput").value;
-            document.getElementById("charCount").innerText = text.length;
-            let words = text.trim().split(/\s+/).filter(w => w.length > 0);
-            document.getElementById("wordCount").innerText = words.length;
+            let text = document.getElementById("mainInput").value; document.getElementById("charCount").innerText = text.length;
+            let words = text.trim().split(/\s+/).filter(w => w.length > 0); document.getElementById("wordCount").innerText = words.length;
         }
-
         function clearInput(e) {
-            e.stopPropagation();
-            playBeep(400, 'sine', 0.1);
-            document.getElementById("mainInput").value = "";
-            document.getElementById("output").innerText = "Waiting for text scanning...";
-            document.getElementById("riskMeter").style.width = "0%";
-            document.getElementById("riskPercent").innerText = "0%";
-            document.getElementById("pdfBtn").style.display = "none";
-            updateCounters();
-            stopSirenAlarm();
+            e.stopPropagation(); playBeep(400, 'sine', 0.1); document.getElementById("mainInput").value = "";
+            document.getElementById("output").innerText = "Waiting for text scanning..."; document.getElementById("riskMeter").style.width = "0%";
+            document.getElementById("riskPercent").innerText = "0%"; document.getElementById("pdfBtn").style.display = "none"; updateCounters(); stopSirenAlarm();
         }
-
-        // --- Processing Engine ---
-        let lastText = ""; let lastVerdict = "";
-        let historyStarted = false;
-
         function runAnalysis(e) {
-            e.stopPropagation();
-            let input = document.getElementById("mainInput").value.trim();
-            if(!input) return alert("Enter text payload to scan!");
-
-            playBeep(600, 'sawtooth', 0.2);
-            let out = document.getElementById("output");
-            let meter = document.getElementById("riskMeter");
-            let riskTxt = document.getElementById("riskPercent");
-            let histBox = document.getElementById("historyBox");
-            
-            out.innerText = "> Running algorithmic probability tables...";
-            
+            e.stopPropagation(); let input = document.getElementById("mainInput").value.trim(); if(!input) return alert("Enter payload!");
+            playBeep(600, 'sawtooth', 0.2); document.getElementById("output").innerText = "> Running algorithmic matching models...";
             setTimeout(() => {
-                let spamWords = ['win', 'free', 'lottery', 'prize', 'click here', 'money', 'otp', 'cash', 'urgent', 'பணம்', 'பரிசு'];
-                let lower = input.toLowerCase();
-                let matches = spamWords.filter(w => lower.includes(w)).length;
-                let hasLink = lower.includes('http') || lower.includes('.com');
-
-                lastText = input;
-                let currentItemHtml = "";
-                let previewText = input.length > 30 ? input.substring(0, 30) + "..." : input;
-
-                if(matches >= 2 || (hasLink && (lower.includes('free') || lower.includes('win')))) {
-                    startSirenAlarm(); 
-                    meter.style.width = "95%"; meter.style.backgroundColor = "#ef4444";
-                    riskTxt.innerText = "95% [DANGER]";
-                    out.innerHTML = "🚨 <b>MALICIOUS DATA DETECTED!</b><br>Severe phishing templates isolated.";
-                    lastVerdict = "CRITICAL PHISHING INFRASTRUCTURE";
-                    currentItemHtml = `<div class="history-item danger">🚨 [SPAM] ${previewText} (95% Threat)</div>`;
+                let spamWords = ['win', 'free', 'lottery', 'prize', 'money', 'otp', 'cash', 'பணம்', 'பரிசு'];
+                let lower = input.toLowerCase(); let matches = spamWords.filter(w => lower.includes(w)).length;
+                let out = document.getElementById("output"); let meter = document.getElementById("riskMeter");
+                let riskTxt = document.getElementById("riskPercent"); let histBox = document.getElementById("historyBox");
+                lastText = input; let preview = input.length > 25 ? input.substring(0, 25) + "..." : input;
+                if(matches >= 2 || (lower.includes('http') && lower.includes('free'))) {
+                    startSirenAlarm(); meter.style.width = "95%"; meter.style.backgroundColor = "#ef4444"; riskTxt.innerText = "95% [DANGER]";
+                    out.innerHTML = "🚨 <b>MALICIOUS PHISHING FOUND</b><br>Threat template isolated."; lastVerdict = "CRITICAL SPAM VECTOR";
+                    if(!historyStarted) { histBox.innerHTML = ""; historyStarted = true; } histBox.innerHTML = `<div class="history-item danger">> [SPAM] ${preview}</div>` + histBox.innerHTML;
                 } else {
-                    stopSirenAlarm();
-                    playBeep(800, 'sine', 0.2); 
-                    meter.style.width = "10%"; meter.style.backgroundColor = "#10b981";
-                    riskTxt.innerText = "10% [SAFE]";
-                    out.innerHTML = "✅ <b>PACKET SIGNATURE VERIFIED CLEAN</b><br>No malicious patterns found.";
-                    lastVerdict = "SECURE / VERIFIED SAFE";
-                    currentItemHtml = `<div class="history-item safe">✅ [SAFE] ${previewText} (10% Clean)</div>`;
+                    stopSirenAlarm(); playBeep(850, 'sine', 0.2); meter.style.width = "10%"; meter.style.backgroundColor = "#10b981"; riskTxt.innerText = "10% [SAFE]";
+                    out.innerHTML = "✅ <b>CLEAN DATA STRUCTURE SIGNATURE</b>"; lastVerdict = "SAFE SECTOR DATA";
+                    if(!historyStarted) { histBox.innerHTML = ""; historyStarted = true; } histBox.innerHTML = `<div class="history-item safe">> [SAFE] ${preview}</div>` + histBox.innerHTML;
                 }
-
-                if(!historyStarted) { histBox.innerHTML = ""; historyStarted = true; }
-                histBox.innerHTML = currentItemHtml + histBox.innerHTML;
                 document.getElementById("pdfBtn").style.display = "block";
-            }, 1000);
+            }, 900);
         }
 
         function askBot() {
-            let userTxt = document.getElementById("botInput").value.trim();
-            if(!userTxt) return;
-
-            playBeep(450, 'sine', 0.1);
-            let box = document.getElementById("chatBox");
-            box.innerHTML += `<div class="msg user">👤: ${userTxt}</div>`;
-            document.getElementById("botInput").value = "";
-
-            setTimeout(() => {
-                box.innerHTML += `<div class="msg bot">🤖 [AI]: Analysis logged. Mainframe is filtering bad incoming nodes!</div>`;
-                box.scrollTop = box.scrollHeight;
-                playBeep(520, 'sine', 0.15);
-            }, 500);
+            let userTxt = document.getElementById("botInput").value.trim(); if(!userTxt) return;
+            playBeep(450, 'sine', 0.1); let box = document.getElementById("chatBox");
+            box.innerHTML += `<div style="margin-bottom:5px; color:#38bdf8; text-align:right;">👤: ${userTxt}</div>`; document.getElementById("botInput").value = "";
+            setTimeout(() => { box.innerHTML += `<div style="margin-bottom:5px; color:#34d399;">🤖 [AI]: Threat matrices monitored. Terminal safe.</div>`; box.scrollTop = box.scrollHeight; playBeep(520, 'sine', 0.15); }, 400);
         }
 
         function generatePDFReport(e) {
-            e.stopPropagation();
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.setFillColor(15, 23, 42); doc.rect(0, 0, 220, 300, 'F');
-            doc.setFont("courier", "bold"); doc.setTextColor(14, 165, 233); doc.setFontSize(20);
-            doc.text("AI COMMAND TERMINAL REPORT", 15, 25);
-            doc.setFontSize(12); doc.setTextColor(255, 255, 255);
-            doc.text(`VERDICT: ${lastVerdict}`, 15, 50); doc.text("PAYLOAD:", 15, 70);
-            doc.setFont("Helvetica", "normal");
-            let splitText = doc.splitTextToSize(lastText, 170);
-            doc.text(splitText, 15, 80); doc.save("CyberAI-Report.pdf");
+            e.stopPropagation(); const { jsPDF } = window.jspdf; const doc = new jsPDF();
+            doc.setFillColor(15, 23, 42); doc.rect(0, 0, 220, 300, 'F'); doc.setFont("courier", "bold"); doc.setTextColor(14, 165, 233); doc.setFontSize(18);
+            doc.text("ULTRA SPAM DETECTOR DEPLOYMENT REPORT", 15, 25); doc.setFontSize(12); doc.setTextColor(255, 255, 255);
+            doc.text(`VERDICT SUMMARY: ${lastVerdict}`, 15, 45); doc.text("RAW PACKET PAYLOAD DATA:", 15, 65); doc.setFont("Helvetica", "normal");
+            let splitText = doc.splitTextToSize(lastText, 170); doc.text(splitText, 15, 75); doc.save("UltraSpam-Report.pdf");
         }
+
+        // --- AUDIO ENGINE ---
+        let audioCtx; let alarmInterval;
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playBeep(freq, type, duration) { initAudio(); try { let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.type = type; osc.frequency.value = freq; gain.gain.setValueAtTime(0.08, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration); } catch(e) {} }
+        function startSirenAlarm() { initAudio(); stopSirenAlarm(); let count = 0; alarmInterval = setInterval(() => { if (count >= 4) { clearInterval(alarmInterval); return; } try { let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.type = "sawtooth"; osc.frequency.setValueAtTime(350, audioCtx.currentTime); osc.frequency.linearRampToValueAtTime(750, audioCtx.currentTime + 0.2); gain.gain.setValueAtTime(0.08, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.2); } catch(e) {} count++; }, 400); }
+        function stopSirenAlarm() { if (alarmInterval) clearInterval(alarmInterval); }
+
+        // --- MOUSE TRAIL VECTOR ---
+        const pCanvas = document.getElementById('particleCanvas'); const pCtx = pCanvas.getContext('2d'); pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight; let particles = [];
+        window.addEventListener('mousemove', (e) => { for(let i=0; i<2; i++) { particles.push({ x: e.clientX, y: e.clientY, size: Math.random() * 2 + 1, speedX: (Math.random() - 0.5) * 2, speedY: (Math.random() - 0.5) * 2, color: `hsl(${Math.random() * 360}, 100%, 50%)`, alpha: 1 }); } });
+        function animateParticles() { pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height); for(let i = 0; i < particles.length; i++) { let p = particles[i]; pCtx.fillStyle = p.color; pCtx.globalAlpha = p.alpha; pCtx.beginPath(); pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2); pCtx.fill(); p.x += p.speedX; p.y += p.speedY; p.alpha -= 0.02; if(p.alpha <= 0) { particles.splice(i, 1); i--; } } requestAnimationFrame(animateParticles); }
+        animateParticles();
     </script>
 </body>
 </html>
